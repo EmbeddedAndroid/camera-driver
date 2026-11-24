@@ -13,6 +13,7 @@
 #include "tpg_hw/tpg_hw_v_1_4/tpg_hw_v_1_4_data.h"
 #include "cam_req_mgr_dev.h"
 #include <linux/of_device.h>
+#include <linux/pm_runtime.h>
 
 static int cam_tpg_subdev_close(struct v4l2_subdev *sd,
 	struct v4l2_subdev_fh *fh)
@@ -222,6 +223,8 @@ static int tpg_soc_info_init(struct cam_tpg_device *tpg_dev,
 		rc = cam_soc_util_request_platform_resource(
 			&tpg_dev->soc_info, cam_tpg_irq_handler,
 			&(irq_data[0]));
+	else
+		pm_runtime_enable(tpg_dev->soc_info.dev);
 	if (rc)
 		CAM_ERR(CAM_TPG, "unable to request platfrom resources");
 	else
