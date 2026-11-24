@@ -495,6 +495,44 @@ err:
 	return rc;
 }
 
+static int cam_cpas_util_add_client_node(struct cam_cpas_client *client,
+					 struct cam_cpas_tree_node *node,
+					 const char *client_name)
+{
+	u32 trans = node->path_trans_type;
+	int k;
+
+	if (!client->tree_node[node->path_data_type][trans]) {
+		client->tree_node[node->path_data_type][trans] = node;
+		return 0;
+	}
+
+	/*
+	 * A client may route one consolidated traffic type through several
+	 * nodes that differ only in constituent-paths. Votes find a node
+	 * through its constituents, so park the extra node on a free
+	 * consolidated index instead of replacing the first one.
+	 */
+	if (node->path_data_type >= CAM_CPAS_MAX_GRAN_PATHS_PER_CLIENT) {
+		for (k = CAM_CPAS_PATH_DATA_MAX - 1;
+		     k >= CAM_CPAS_MAX_GRAN_PATHS_PER_CLIENT; k--) {
+			if (client->tree_node[k][trans])
+				continue;
+
+			CAM_DBG(CAM_CPAS, "Client[%s] node %s data type %u -> %d",
+				client_name, node->node_name,
+				node->path_data_type, k);
+			node->path_data_type = k;
+			client->tree_node[k][trans] = node;
+			return 0;
+		}
+	}
+
+	CAM_ERR(CAM_CPAS, "Client[%s] node %s duplicates data type %u trans %u",
+		client_name, node->node_name, node->path_data_type, trans);
+	return -EINVAL;
+}
+
 static int cam_cpas_parse_node_tree(struct cam_cpas *cpas_core,
 	struct device_node *of_node, struct cam_cpas_private_soc *soc_private)
 {
@@ -733,8 +771,10 @@ static int cam_cpas_parse_node_tree(struct cam_cpas *cpas_core,
 
 				curr_client = cpas_core->cpas_client[client_idx];
 				curr_client->tree_node_valid = true;
-				curr_client->tree_node[curr_node_ptr->path_data_type]
-					[curr_node_ptr->path_trans_type] = curr_node_ptr;
+				rc = cam_cpas_util_add_client_node(curr_client,
+					curr_node_ptr, client_name);
+				if (rc)
+					return rc;
 
 				if (soc_private->enable_cam_ddr_drv) {
 					rc = of_property_read_u32(curr_node, "drv-voting-index",
