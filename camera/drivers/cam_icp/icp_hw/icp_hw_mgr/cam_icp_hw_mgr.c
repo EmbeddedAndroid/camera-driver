@@ -3049,6 +3049,7 @@ static int cam_icp_process_msg_pkt_type(
 			(struct hfi_msg_dev_async_ack *)msg_ptr)->size;
 		break;
 
+	case HFI_MSG_OFE_ASYNC_COMMAND_DIRECT_ACK:
 	case HFI_MSG_OFE_ASYNC_COMMAND_ACK:
 		CAM_DBG(CAM_ICP, "[%s] received OFE ASYNC COMMAND ACK",
 			hw_mgr->hw_mgr_name);
@@ -4177,7 +4178,9 @@ static int cam_icp_mgr_populate_abort_cmd(struct cam_icp_hw_ctx_data *ctx_data,
 		opcode = HFI_IPEBPS_CMD_OPCODE_IPE_ABORT;
 		break;
 	case CAM_ICP_DEV_OFE:
-		pkt_type = HFI_CMD_OFE_ASYNC_COMMAND;
+		pkt_type = HFI_CMD_OFE_ASYNC_COMMAND_DIRECT;
+		packet_size = packet_size + sizeof(struct hfi_cmd_abort) -
+			sizeof(((struct hfi_cmd_dev_async *)0)->payload.direct);
 		opcode = HFI_OFE_CMD_OPCODE_ABORT;
 		break;
 	default:
@@ -4304,7 +4307,9 @@ static int cam_icp_mgr_destroy_handle(
 		opcode = HFI_IPEBPS_CMD_OPCODE_IPE_DESTROY;
 		break;
 	case CAM_ICP_DEV_OFE:
-		pkt_type = HFI_CMD_OFE_ASYNC_COMMAND;
+		pkt_type = HFI_CMD_OFE_ASYNC_COMMAND_DIRECT;
+		packet_size = packet_size + sizeof(struct hfi_cmd_destroy) -
+			sizeof(((struct hfi_cmd_dev_async *)0)->payload.direct);
 		opcode = HFI_OFE_CMD_OPCODE_DESTROY;
 		break;
 	default:
