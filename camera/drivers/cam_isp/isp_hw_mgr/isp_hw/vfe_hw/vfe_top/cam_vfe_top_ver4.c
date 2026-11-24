@@ -2251,13 +2251,14 @@ skip_core_cfg:
 	rsrc_data->stored_irq_masks[VFE_TOP_VER4_ERR_MASK][CAM_VFE_TOP_IRQ_REG0] =
 		rsrc_data->reg_data->error_irq_mask;
 
-	rsrc_data->stored_irq_masks[VFE_TOP_VER4_FRAME_IRQ_MASK][CAM_VFE_TOP_IRQ_REG1] =
+	rsrc_data->stored_irq_masks[VFE_TOP_VER4_FRAME_IRQ_MASK]
+		[rsrc_data->common_reg->frame_timing_irq_reg_idx] =
 		rsrc_data->reg_data->sof_irq_mask | rsrc_data->reg_data->epoch0_irq_mask |
 		rsrc_data->reg_data->eof_irq_mask;
 
 	rsrc_data->n_frame_irqs = hweight32(
 		rsrc_data->stored_irq_masks[VFE_TOP_VER4_FRAME_IRQ_MASK]
-		[CAM_VFE_TOP_IRQ_REG1]);
+		[rsrc_data->common_reg->frame_timing_irq_reg_idx]);
 
 	CAM_DBG(CAM_ISP, "stored_err_mask: 0x%x 0x%x frame_mask  0x%x 0x%x",
 		rsrc_data->stored_irq_masks[VFE_TOP_VER4_ERR_MASK][CAM_VFE_TOP_IRQ_REG0],
