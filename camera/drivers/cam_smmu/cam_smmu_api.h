@@ -23,6 +23,7 @@
 #define COOKIE_MASK ((1<<COOKIE_SIZE) - 1)
 #define MULTI_CLIENT_REGION_SHIFT 28
 #define CAM_SMMU_HDL_MASK ((BIT(MULTI_CLIENT_REGION_SHIFT)) - 1)
+#define CAM_SMMU_GET_BASE_HDL(x) ((x) & CAM_SMMU_HDL_MASK)
 #define GET_SMMU_TABLE_IDX(x) ((((x) & CAM_SMMU_HDL_MASK) >> COOKIE_SIZE) & COOKIE_MASK)
 
 #define CAM_SMMU_GET_IOVA_DELTA(val1, val2)                                \
