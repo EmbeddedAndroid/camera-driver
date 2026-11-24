@@ -765,6 +765,7 @@ static int cam_ife_csid_ver2_path_top_half(
 	uint32_t                                   evt_id,
 	struct cam_irq_th_payload                 *th_payload)
 {
+	u32                                           is_sof;
 	int32_t                                       rc;
 	struct cam_hw_info                           *hw_info;
 	struct cam_ife_csid_ver2_hw                  *csid_hw = NULL;
@@ -811,8 +812,11 @@ static int cam_ife_csid_ver2_path_top_half(
 
 	evt_payload->irq_reg_val = th_payload->evt_status_arr[0];
 
-	if ((evt_payload->irq_reg_val & path_reg->sof_irq_mask)
-		&& path_cfg->handle_camif_irq) {
+	is_sof = evt_payload->irq_reg_val & path_reg->sof_irq_mask;
+	if (path_reg->capabilities & CAM_IFE_CSID_CAP_MULTI_CTXT)
+		is_sof |= evt_payload->irq_reg_val & csid_reg->ipp_mc_reg->comp_sof_mask;
+
+	if (is_sof && path_cfg->handle_camif_irq) {
 		evt_payload->sof_ts_reg_val = cam_io_r_mb(soc_info->reg_map[0].mem_base +
 			path_reg->timestamp_curr1_sof_addr);
 		evt_payload->sof_ts_reg_val = (evt_payload->sof_ts_reg_val << 32) |
