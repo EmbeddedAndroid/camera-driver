@@ -286,9 +286,9 @@ static const uint32_t cam_ife_csid_lite_780_num_rx_irq_desc[] = {
 	ARRAY_SIZE(cam_ife_csid_lite_780_rx_irq_desc[0]),
 };
 
-static struct cam_irq_register_set cam_ife_csid_lite_780_irq_reg_set[9] = {
+static struct cam_irq_register_set cam_ife_csid_lite_780_irq_reg_set[CAM_IFE_CSID_IRQ_REG_MAX] = {
 	/* Top */
-	{
+	[CAM_IFE_CSID_IRQ_REG_TOP] = {
 		.mask_reg_offset   = 0x00000080,
 		.clear_reg_offset  = 0x00000084,
 		.status_reg_offset = 0x0000007C,
@@ -297,43 +297,43 @@ static struct cam_irq_register_set cam_ife_csid_lite_780_irq_reg_set[9] = {
 		.test_sub_val      = BIT(0),
 	},
 	/* RX */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RX] = {
 		.mask_reg_offset   = 0x000000A0,
 		.clear_reg_offset  = 0x000000A4,
 		.status_reg_offset = 0x0000009C,
 	},
 	/* RDI0 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_0] = {
 		.mask_reg_offset   = 0x000000F0,
 		.clear_reg_offset  = 0x000000F4,
 		.status_reg_offset = 0x000000EC,
 	},
 	/* RDI1 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_1] = {
 		.mask_reg_offset   = 0x00000100,
 		.clear_reg_offset  = 0x00000104,
 		.status_reg_offset = 0x000000FC,
 	},
 	/* RDI2 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_2] = {
 		.mask_reg_offset   = 0x00000110,
 		.clear_reg_offset  = 0x00000114,
 		.status_reg_offset = 0x0000010C,
 	},
 	/* RDI3 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_3] = {
 		.mask_reg_offset   = 0x00000120,
 		.clear_reg_offset  = 0x00000124,
 		.status_reg_offset = 0x0000011C,
 	},
-	{}, /* no RDI4 */
+	[CAM_IFE_CSID_IRQ_REG_RDI_4] = {}, /* no RDI4 */
 	/* IPP */
-	{
+	[CAM_IFE_CSID_IRQ_REG_IPP] = {
 		.mask_reg_offset   = 0x000000B0,
 		.clear_reg_offset  = 0x000000B4,
 		.status_reg_offset = 0x000000AC,
 	},
-	{}, /* no PPP */
+	[CAM_IFE_CSID_IRQ_REG_PPP] = {}, /* no PPP */
 };
 
 static struct cam_irq_controller_reg_info cam_ife_csid_lite_780_top_irq_reg_info = {
@@ -351,29 +351,30 @@ static struct cam_irq_controller_reg_info cam_ife_csid_lite_780_rx_irq_reg_info 
 	.global_irq_cmd_offset = 0,
 };
 
-static struct cam_irq_controller_reg_info cam_ife_csid_lite_780_path_irq_reg_info[6] = {
-	{
+static struct cam_irq_controller_reg_info
+	cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_MAX] = {
+	[CAM_IFE_PIX_PATH_RES_RDI_0] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_lite_780_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_0],
 		.global_irq_cmd_offset = 0,
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_1] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_lite_780_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_1],
 		.global_irq_cmd_offset = 0,
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_2] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_lite_780_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_2],
 		.global_irq_cmd_offset = 0,
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_3] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_lite_780_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_3],
 		.global_irq_cmd_offset = 0,
 	},
-	{}, /* no RDI4 */
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_4] = {}, /* no RDI4 */
+	[CAM_IFE_PIX_PATH_RES_IPP] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_lite_780_irq_reg_set[CAM_IFE_CSID_IRQ_REG_IPP],
 		.global_irq_cmd_offset = 0,
@@ -1104,12 +1105,17 @@ static struct cam_ife_csid_ver2_reg_info cam_ife_csid_lite_780_reg_info = {
 	.top_irq_reg_info      = &cam_ife_csid_lite_780_top_irq_reg_info,
 	.rx_irq_reg_info       = &cam_ife_csid_lite_780_rx_irq_reg_info,
 	.path_irq_reg_info     = {
-		&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_0],
-		&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_1],
-		&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_2],
-		&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_3],
-		NULL,
-		&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP],
+		[CAM_IFE_PIX_PATH_RES_RDI_0] =
+			&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_0],
+		[CAM_IFE_PIX_PATH_RES_RDI_1] =
+			&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_1],
+		[CAM_IFE_PIX_PATH_RES_RDI_2] =
+			&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_2],
+		[CAM_IFE_PIX_PATH_RES_RDI_3] =
+			&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_3],
+		[CAM_IFE_PIX_PATH_RES_RDI_4] = NULL,
+		[CAM_IFE_PIX_PATH_RES_IPP] =
+			&cam_ife_csid_lite_780_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP],
 		},
 	.buf_done_irq_reg_info = &cam_ife_csid_lite_780_buf_done_irq_reg_info,
 	.cmn_reg               = &cam_ife_csid_lite_780_cmn_reg_info,

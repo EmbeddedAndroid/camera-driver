@@ -18,13 +18,20 @@ static struct cam_ife_csid_ver2_reg_info cam_ife_csid_680_110_reg_info = {
 	.top_irq_reg_info      = cam_ife_csid_680_top_irq_reg_info,
 	.rx_irq_reg_info       = cam_ife_csid_680_rx_irq_reg_info,
 	.path_irq_reg_info     = {
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_0],
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_1],
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_2],
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_3],
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_4],
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP],
-		&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_PPP],
+		[CAM_IFE_PIX_PATH_RES_RDI_0] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_0],
+		[CAM_IFE_PIX_PATH_RES_RDI_1] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_1],
+		[CAM_IFE_PIX_PATH_RES_RDI_2] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_2],
+		[CAM_IFE_PIX_PATH_RES_RDI_3] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_3],
+		[CAM_IFE_PIX_PATH_RES_RDI_4] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_4],
+		[CAM_IFE_PIX_PATH_RES_IPP] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP],
+		[CAM_IFE_PIX_PATH_RES_PPP] =
+			&cam_ife_csid_680_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_PPP],
 	},
 	.buf_done_irq_reg_info = &cam_ife_csid_680_buf_done_irq_reg_info,
 	.cmn_reg                              = &cam_ife_csid_680_cmn_reg_info,

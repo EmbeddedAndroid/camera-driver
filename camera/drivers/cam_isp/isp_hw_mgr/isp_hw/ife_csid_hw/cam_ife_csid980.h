@@ -312,7 +312,7 @@ static const uint32_t cam_ife_csid_980_num_top_irq_desc[] = {
 
 static struct cam_irq_register_set cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_MAX] = {
 	/* Top_1 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_TOP] = {
 		.mask_reg_offset   = 0x00000088,
 		.clear_reg_offset  = 0x0000008C,
 		.status_reg_offset = 0x00000084,
@@ -321,81 +321,81 @@ static struct cam_irq_register_set cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ
 		.test_sub_val      = BIT(0),
 	},
 	/* RX_1 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RX] = {
 		.mask_reg_offset   = 0x000000B8,
 		.clear_reg_offset  = 0x000000BC,
 		.status_reg_offset = 0x000000B4,
 	},
 	/* RDI0 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_0] = {
 		.mask_reg_offset   = 0x00000118,
 		.clear_reg_offset  = 0x0000011C,
 		.status_reg_offset = 0x00000114,
 	},
 	/* RDI1 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_1] = {
 		.mask_reg_offset   = 0x00000128,
 		.clear_reg_offset  = 0x0000012C,
 		.status_reg_offset = 0x00000124,
 	},
 	/* RDI2 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_2] = {
 		.mask_reg_offset   = 0x00000138,
 		.clear_reg_offset  = 0x0000013C,
 		.status_reg_offset = 0x00000134,
 	},
 	/* RDI3 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_3] = {
 		.mask_reg_offset   = 0x00000148,
 		.clear_reg_offset  = 0x0000014C,
 		.status_reg_offset = 0x00000144,
 	},
 	/* RDI4 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RDI_4] = {
 		.mask_reg_offset   = 0x00000158,
 		.clear_reg_offset  = 0x0000015C,
 		.status_reg_offset = 0x00000154,
 	},
 	/* IPP_0 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_IPP] = {
 		.mask_reg_offset   = 0x000000D8,
 		.clear_reg_offset  = 0x000000DC,
 		.status_reg_offset = 0x000000D4,
 	},
 	/* PPP */
-	{
+	[CAM_IFE_CSID_IRQ_REG_PPP] = {
 		.mask_reg_offset   = 0x00000108,
 		.clear_reg_offset  = 0x0000010C,
 		.status_reg_offset = 0x00000104,
 	},
 	/* UDI_0 */
-	{0},
+	[CAM_IFE_CSID_IRQ_REG_UDI_0] = {0},
 	/* UDI_1 */
-	{0},
+	[CAM_IFE_CSID_IRQ_REG_UDI_1] = {0},
 	/* UDI_2 */
-	{0},
+	[CAM_IFE_CSID_IRQ_REG_UDI_2] = {0},
 
 	/* Top_2 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_TOP_2] = {
 		.mask_reg_offset   = 0x00000098,
 		.clear_reg_offset  = 0x0000009C,
 		.status_reg_offset = 0x00000094,
 		.set_reg_offset    = 0x00000090,
 	},
 	/* RX_2 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_RX_2] = {
 		.mask_reg_offset   = 0x000000C8,
 		.clear_reg_offset  = 0x000000CC,
 		.status_reg_offset = 0x000000C4,
 	},
 	/* IPP_1 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_IPP_1] = {
 		.mask_reg_offset   = 0x000000E8,
 		.clear_reg_offset  = 0x000000EC,
 		.status_reg_offset = 0x000000E4,
 	},
 	/* IPP_2 */
-	{
+	[CAM_IFE_CSID_IRQ_REG_IPP_2] = {
 		.mask_reg_offset   = 0x000000F8,
 		.clear_reg_offset  = 0x000000FC,
 		.status_reg_offset = 0x000000F4,
@@ -435,53 +435,53 @@ static struct cam_irq_controller_reg_info cam_ife_csid_980_rx_irq_reg_info[] = {
 
 static struct cam_irq_controller_reg_info
 	cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_MAX] = {
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_0] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_0],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_1] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_1],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_2] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_2],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_3] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_3],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_RDI_4] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_RDI_4],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_IPP] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_IPP],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_PPP] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_PPP],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
 	/* UDI_0 */
-	{0},
+	[CAM_IFE_PIX_PATH_RES_UDI_0] = {0},
 	/* UDI_1 */
-	{0},
+	[CAM_IFE_PIX_PATH_RES_UDI_1] = {0},
 	/* UDI_2 */
-	{0},
-	{
+	[CAM_IFE_PIX_PATH_RES_UDI_2] = {0},
+	[CAM_IFE_PIX_PATH_RES_IPP_1] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_IPP_1],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
 	},
-	{
+	[CAM_IFE_PIX_PATH_RES_IPP_2] = {
 		.num_registers = 1,
 		.irq_reg_set = &cam_ife_csid_980_irq_reg_set[CAM_IFE_CSID_IRQ_REG_IPP_2],
 		.global_irq_cmd_offset = 0, /* intentionally set to zero */
@@ -1818,16 +1818,16 @@ static struct cam_ife_csid_ver2_common_reg_info
 						CAM_IFE_CSID_CAP_SKIP_EPOCH_CFG,
 	.top_top2_irq_mask                       = 0x80000000,
 	.drv_rup_en_val_map = {
-		2, /*RDI0 */
-		3, /*RDI1 */
-		4, /*RDI2 */
-		5, /*RDI3 */
-		6, /*RDI4 */
-		0, /*IPP */
-		1, /*PPP */
-		0, /*UDI0 */
-		0, /*UDI1 */
-		0, /*UDI2 */
+		[CAM_IFE_PIX_PATH_RES_RDI_0] = 2, /*RDI0 */
+		[CAM_IFE_PIX_PATH_RES_RDI_1] = 3, /*RDI1 */
+		[CAM_IFE_PIX_PATH_RES_RDI_2] = 4, /*RDI2 */
+		[CAM_IFE_PIX_PATH_RES_RDI_3] = 5, /*RDI3 */
+		[CAM_IFE_PIX_PATH_RES_RDI_4] = 6, /*RDI4 */
+		[CAM_IFE_PIX_PATH_RES_IPP] = 0, /*IPP */
+		[CAM_IFE_PIX_PATH_RES_PPP] = 1, /*PPP */
+		[CAM_IFE_PIX_PATH_RES_UDI_0] = 0, /*UDI0 */
+		[CAM_IFE_PIX_PATH_RES_UDI_1] = 0, /*UDI1 */
+		[CAM_IFE_PIX_PATH_RES_UDI_2] = 0, /*UDI2 */
 	},
 	.drv_path_idle_en_val_map = {
 		BIT(4), /*CAM_ISP_PXL_PATH */
@@ -1858,18 +1858,27 @@ static struct cam_ife_csid_ver2_reg_info cam_ife_csid_980_reg_info = {
 	.top_irq_reg_info      = cam_ife_csid_980_top_irq_reg_info,
 	.rx_irq_reg_info       = cam_ife_csid_980_rx_irq_reg_info,
 	.path_irq_reg_info     = {
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_0],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_1],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_2],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_3],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_4],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_PPP],
-		NULL,
-		NULL,
-		NULL,
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP_1],
-		&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP_2],
+		[CAM_IFE_PIX_PATH_RES_RDI_0] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_0],
+		[CAM_IFE_PIX_PATH_RES_RDI_1] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_1],
+		[CAM_IFE_PIX_PATH_RES_RDI_2] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_2],
+		[CAM_IFE_PIX_PATH_RES_RDI_3] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_3],
+		[CAM_IFE_PIX_PATH_RES_RDI_4] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_RDI_4],
+		[CAM_IFE_PIX_PATH_RES_IPP] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP],
+		[CAM_IFE_PIX_PATH_RES_PPP] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_PPP],
+		[CAM_IFE_PIX_PATH_RES_UDI_0] = NULL,
+		[CAM_IFE_PIX_PATH_RES_UDI_1] = NULL,
+		[CAM_IFE_PIX_PATH_RES_UDI_2] = NULL,
+		[CAM_IFE_PIX_PATH_RES_IPP_1] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP_1],
+		[CAM_IFE_PIX_PATH_RES_IPP_2] =
+			&cam_ife_csid_980_path_irq_reg_info[CAM_IFE_PIX_PATH_RES_IPP_2],
 	},
 	.buf_done_irq_reg_info = &cam_ife_csid_980_buf_done_irq_reg_info,
 	.cmn_reg                              = &cam_ife_csid_980_cmn_reg_info,
