@@ -1824,7 +1824,8 @@ static void cam_mem_mgr_close(void)
 
 	for_each_set_bit_from(i, tbl.bitmap, tbl.bits) {
 		mutex_lock(&tbl.m_lock);
-		if (tbl.bufq[i].active) {
+		if (tbl.bufq[i].active &&
+		    (tbl.bufq[i].flags & CAM_MEM_FLAG_KMD_ACCESS)) {
 			CAM_DBG(CAM_MEM, "Active buffer idx=%d", i);
 			cmd.buf_handle = tbl.bufq[i].buf_handle;
 			mutex_lock(&tbl.bufq[i].q_lock);
