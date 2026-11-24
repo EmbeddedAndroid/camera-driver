@@ -6719,6 +6719,8 @@ static int cam_ife_mgr_acquire_hw(void *hw_mgr_priv, void *acquire_hw_args)
 		goto free_ctx;
 	}
 
+	c_ctx->major_version =
+		(acquire_hw_info->common_info_version >> 12) & 0xF;
 	c_ctx->is_offline = c_ctx->flags.is_offline;
 	ife_mgr_ctx->num_in_ports = acquire_hw_info->num_inputs;
 	ife_mgr_ctx->in_ports = kcalloc(acquire_hw_info->num_inputs,
