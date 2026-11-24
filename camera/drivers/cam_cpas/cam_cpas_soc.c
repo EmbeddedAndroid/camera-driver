@@ -19,6 +19,17 @@
 #include "cam_cpas_soc.h"
 #include "cam_compat.h"
 
+static const char * const cam_cpas_slp_stg_names[CAM_CPAS_SLP_STG_RESET_MAX] = {
+	[CAM_CPAS_HF_SLP_STG_ARES] = "hf_slp_stg_ares",
+	[CAM_CPAS_SF_SLP_STG_ARES] = "sf_slp_stg_ares",
+	[CAM_CPAS_HF_SEL_SLP_STG_ARES] = "hf_sel_slp_stg_ares",
+	[CAM_CPAS_SF_SEL_SLP_STG_ARES] = "sf_sel_slp_stg_ares",
+	[CAM_CPAS_SF_CLK_EN_SLP_STG] = "sf_clk_en_slp_stg",
+	[CAM_CPAS_SF_CLK_EN_SEL_SLP_STG] = "sf_clk_en_sel_slp_stg",
+	[CAM_CPAS_HF_CLK_EN_SLP_STG] = "hf_clk_en_slp_stg",
+	[CAM_CPAS_HF_CLK_EN_SEL_SLP_STG] = "hf_clk_en_sel_slp_stg",
+};
+
 static uint cpas_dump;
 module_param(cpas_dump, uint, 0644);
 
@@ -1793,7 +1804,7 @@ static int cam_cpas_soc_fill_irq_data(struct cam_hw_info *cpas_hw,
 int cam_cpas_soc_init_resources(struct cam_hw_soc_info *soc_info,
 	irq_handler_t irq_handler, struct cam_hw_info *cpas_hw)
 {
-	int rc = 0;
+	int rc = 0, i;
 	struct cam_cpas_private_soc *soc_private;
 	void *irq_data[CAM_SOC_MAX_IRQ_LINES_PER_DEV] = {0};
 
@@ -1816,10 +1827,22 @@ int cam_cpas_soc_init_resources(struct cam_hw_soc_info *soc_info,
 	}
 	soc_private = (struct cam_cpas_private_soc *)soc_info->soc_private;
 
+	for (i = 0; i < CAM_CPAS_SLP_STG_RESET_MAX; i++)
+		soc_private->slp_stg[i].id = cam_cpas_slp_stg_names[i];
+
+	rc = reset_control_bulk_get_optional_exclusive(&soc_info->pdev->dev,
+						       CAM_CPAS_SLP_STG_RESET_MAX,
+						       soc_private->slp_stg);
+	if (rc) {
+		if (rc != -EPROBE_DEFER)
+			CAM_ERR(CAM_CPAS, "sleep stage resets get failed, rc=%d", rc);
+		goto free_soc_private;
+	}
+
 	rc = cam_cpas_get_custom_dt_info(cpas_hw, soc_info->pdev, soc_private);
 	if (rc) {
 		CAM_ERR(CAM_CPAS, "failed in get_custom_info, rc=%d", rc);
-		goto free_soc_private;
+		goto put_resets;
 	}
 
 	soc_private->irq_data = kcalloc(soc_info->irq_count, sizeof(struct cam_cpas_soc_irq_data),
@@ -1827,7 +1850,7 @@ int cam_cpas_soc_init_resources(struct cam_hw_soc_info *soc_info,
 	if (!soc_private->irq_data) {
 		CAM_ERR(CAM_CPAS, "Failed to allocate irq data");
 		rc = -ENOMEM;
-		goto free_soc_private;
+		goto put_resets;
 	}
 
 	rc = cam_cpas_soc_fill_irq_data(cpas_hw, soc_info, &(irq_data[0]));
@@ -1868,6 +1891,8 @@ release_res:
 	cam_soc_util_release_platform_resource(soc_info);
 free_irq_data:
 	kfree(soc_private->irq_data);
+put_resets:
+	reset_control_bulk_put(CAM_CPAS_SLP_STG_RESET_MAX, soc_private->slp_stg);
 free_soc_private:
 	kfree(soc_private->llcc_info);
 	kfree(soc_private->smart_qos_info);
@@ -1894,6 +1919,8 @@ int cam_cpas_soc_deinit_resources(struct cam_hw_soc_info *soc_info)
 
 	kfree(soc_private->domain_id_clks);
 
+	reset_control_bulk_put(CAM_CPAS_SLP_STG_RESET_MAX, soc_private->slp_stg);
+
 	rc = cam_soc_util_release_platform_resource(soc_info);
 	if (rc)
 		CAM_ERR(CAM_CPAS, "release platform failed, rc=%d", rc);
@@ -1907,6 +1934,36 @@ int cam_cpas_soc_deinit_resources(struct cam_hw_soc_info *soc_info)
 	return rc;
 }
 
+/*
+ * Titan 970 needs the camera HF and SF AXI sleep stage sequence on every
+ * power up, after the top GDSC is on and before the clocks, or the NRT
+ * cores stall on their first reads. The order is the hardware one.
+ */
+static void cam_cpas_soc_slp_stg_seq(struct cam_cpas_private_soc *soc_private)
+{
+	struct reset_control_bulk_data *r = soc_private->slp_stg;
+
+	reset_control_assert(r[CAM_CPAS_HF_SLP_STG_ARES].rstc);
+	reset_control_assert(r[CAM_CPAS_SF_SLP_STG_ARES].rstc);
+	reset_control_assert(r[CAM_CPAS_HF_SEL_SLP_STG_ARES].rstc);
+	reset_control_assert(r[CAM_CPAS_SF_SEL_SLP_STG_ARES].rstc);
+	usleep_range(1, 2);
+	reset_control_deassert(r[CAM_CPAS_HF_SLP_STG_ARES].rstc);
+	reset_control_deassert(r[CAM_CPAS_SF_SLP_STG_ARES].rstc);
+
+	reset_control_assert(r[CAM_CPAS_SF_CLK_EN_SLP_STG].rstc);
+	reset_control_assert(r[CAM_CPAS_SF_CLK_EN_SEL_SLP_STG].rstc);
+	usleep_range(1, 2);
+	reset_control_deassert(r[CAM_CPAS_SF_CLK_EN_SEL_SLP_STG].rstc);
+	reset_control_deassert(r[CAM_CPAS_SF_CLK_EN_SLP_STG].rstc);
+
+	reset_control_assert(r[CAM_CPAS_HF_CLK_EN_SLP_STG].rstc);
+	reset_control_assert(r[CAM_CPAS_HF_CLK_EN_SEL_SLP_STG].rstc);
+	usleep_range(1, 2);
+	reset_control_deassert(r[CAM_CPAS_HF_CLK_EN_SEL_SLP_STG].rstc);
+	reset_control_deassert(r[CAM_CPAS_HF_CLK_EN_SLP_STG].rstc);
+}
+
 int cam_cpas_soc_enable_resources(struct cam_hw_soc_info *soc_info,
 	enum cam_vote_level default_level)
 {
@@ -1916,10 +1973,29 @@ int cam_cpas_soc_enable_resources(struct cam_hw_soc_info *soc_info,
 	/* set this everytime in order to support debugfs to disable clk drv between runs */
 	soc_info->is_clk_drv_en = soc_private->enable_cam_clk_drv;
 
-	rc = cam_soc_util_enable_platform_resource(soc_info, CAM_CLK_SW_CLIENT_IDX, true,
-		default_level, true);
-	if (rc)
+	rc = cam_soc_util_enable_platform_resource(soc_info, CAM_CLK_SW_CLIENT_IDX,
+						   false, default_level, false);
+	if (rc) {
 		CAM_ERR(CAM_CPAS, "enable platform resource failed, rc=%d", rc);
+		return rc;
+	}
+
+	cam_cpas_soc_slp_stg_seq(soc_private);
+
+	rc = cam_soc_util_clk_enable_default(soc_info, CAM_CLK_SW_CLIENT_IDX, default_level);
+	if (rc) {
+		CAM_ERR(CAM_CPAS, "enable clocks failed, rc=%d", rc);
+		cam_soc_util_disable_platform_resource(soc_info, CAM_CLK_SW_CLIENT_IDX,
+						       false, false);
+		return rc;
+	}
+
+	rc = cam_soc_util_irq_enable(soc_info);
+	if (rc) {
+		CAM_ERR(CAM_CPAS, "enable irq failed, rc=%d", rc);
+		cam_soc_util_disable_platform_resource(soc_info, CAM_CLK_SW_CLIENT_IDX,
+						       true, false);
+	}
 
 	return rc;
 }

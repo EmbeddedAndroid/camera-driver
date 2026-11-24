@@ -7,6 +7,7 @@
 #ifndef _CAM_CPAS_SOC_H_
 #define _CAM_CPAS_SOC_H_
 
+#include <linux/reset.h>
 #include <linux/soc/qcom/llcc-qcom.h>
 #include "cam_soc_util.h"
 #include "cam_cpas_hw.h"
@@ -241,6 +242,18 @@ struct cam_cpas_sysfs_info {
 	uint32_t        num_custom[CAM_CPAS_NUM_SUBPARTS_MAX_TYPES];
 };
 
+enum cam_cpas_slp_stg_reset {
+	CAM_CPAS_HF_SLP_STG_ARES,
+	CAM_CPAS_SF_SLP_STG_ARES,
+	CAM_CPAS_HF_SEL_SLP_STG_ARES,
+	CAM_CPAS_SF_SEL_SLP_STG_ARES,
+	CAM_CPAS_SF_CLK_EN_SLP_STG,
+	CAM_CPAS_SF_CLK_EN_SEL_SLP_STG,
+	CAM_CPAS_HF_CLK_EN_SLP_STG,
+	CAM_CPAS_HF_CLK_EN_SEL_SLP_STG,
+	CAM_CPAS_SLP_STG_RESET_MAX,
+};
+
 /**
  * struct cam_cpas_private_soc : CPAS private DT info
  *
@@ -279,6 +292,7 @@ struct cam_cpas_sysfs_info {
  * @domain_id_info: Stores all information related to domain id support
  * @domain_id_clks: All clock related information for domain id support
  * @irq_data: array of data for each irq line to be passed in irq handler
+ * @slp_stg: optional camera AXI sleep stage controls, sequenced at power up
  */
 struct cam_cpas_private_soc {
 	const char *arch_compat;
@@ -313,6 +327,7 @@ struct cam_cpas_private_soc {
 	struct cam_cpas_domain_id_info domain_id_info;
 	struct cam_cpas_domain_id_support_clks *domain_id_clks;
 	struct cam_cpas_soc_irq_data *irq_data;
+	struct reset_control_bulk_data slp_stg[CAM_CPAS_SLP_STG_RESET_MAX];
 };
 
 void cam_cpas_dump_tree_vote_info(struct cam_hw_info *cpas_hw,
