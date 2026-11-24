@@ -267,6 +267,7 @@ struct cam_csid_secondary_evt_config {
  * @need_top_cfg:        Flag to indicate if top cfg is needed
  * @tasklet:             Tasklet to schedule bottom halves
  * @buf_done_controller: IRQ controller for buf done for version 680 hw
+ * @mc_comp_buf_done_controller: IRQ controller for hw context composite buf done
  * @cdm_ops:             CDM Ops
  * @event_cb:            Callback function to hw mgr in case of hw events
  * @phy_sel:             Phy selection number if tpg is enabled from userspace
@@ -299,6 +300,7 @@ struct cam_csid_hw_reserve_resource_args {
 	bool                                      need_top_cfg;
 	void                                     *tasklet;
 	void                                     *buf_done_controller;
+	void                                     *mc_comp_buf_done_controller;
 	void                                     *cdm_ops;
 	cam_hw_mgr_event_cb_func                  event_cb;
 	uint32_t                                  phy_sel;

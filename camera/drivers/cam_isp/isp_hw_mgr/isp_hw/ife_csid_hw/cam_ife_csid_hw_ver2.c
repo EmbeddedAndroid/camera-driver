@@ -4124,6 +4124,8 @@ static int cam_ife_csid_ver2_reserve(void *hw_priv,
 	csid_hw->tasklet  = reserve->tasklet;
 	res->tasklet_info  = reserve->tasklet;
 	reserve->buf_done_controller = csid_hw->buf_done_irq_controller;
+	reserve->mc_comp_buf_done_controller =
+		csid_hw->top_irq_controller[CAM_IFE_CSID_TOP_IRQ_STATUS_REG0];
 	res->cdm_ops = reserve->cdm_ops;
 	csid_hw->flags.sfe_en = reserve->sfe_en;
 	path_cfg->sfe_shdr = reserve->sfe_inline_shdr;
@@ -8072,6 +8074,8 @@ static int cam_ife_csid_ver2_update_res_data(struct cam_ife_csid_ver2_hw *csid_h
 	res->cdm_ops = reserve->cdm_ops;
 
 	reserve->buf_done_controller = csid_hw->buf_done_irq_controller;
+	reserve->mc_comp_buf_done_controller =
+		csid_hw->top_irq_controller[CAM_IFE_CSID_TOP_IRQ_STATUS_REG0];
 	csid_hw->flags.sfe_en = reserve->sfe_en;
 	path_cfg->sfe_shdr = reserve->sfe_inline_shdr;
 	csid_hw->flags.offline_mode = reserve->is_offline;

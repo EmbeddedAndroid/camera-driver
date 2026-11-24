@@ -221,6 +221,7 @@ struct cam_vfe_hw_vfe_in_acquire_args {
  * @priv:                    Context data
  * @event_cb:                Callback function to hw mgr in case of hw events
  * @buf_done_controller:     Buf done controller for isp
+ * @mc_comp_buf_done_controller: Hw context composite buf done controller
  * @per_port_acquire:        Indicates if acquire as real acquire or per port virual
  *                           acquire for current res path
  * @vfe_out:                 Acquire args for VFE_OUT
@@ -233,6 +234,7 @@ struct cam_vfe_acquire_args {
 	void                                *priv;
 	cam_hw_mgr_event_cb_func             event_cb;
 	void                                *buf_done_controller;
+	void                                *mc_comp_buf_done_controller;
 	bool                                 per_port_acquire;
 	union {
 		struct cam_vfe_hw_vfe_out_acquire_args     vfe_out;
@@ -381,6 +383,7 @@ struct cam_vfe_bus_irq_evt_payload {
 	uint32_t                    irq_reg_val[CAM_IFE_BUS_IRQ_REGISTERS_MAX];
 	struct cam_isp_timestamp    ts;
 	uint32_t                    last_consumed_addr;
+	bool                        is_hw_ctxt_comp_done;
 };
 
 /**

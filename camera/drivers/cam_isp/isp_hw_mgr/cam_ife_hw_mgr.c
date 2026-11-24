@@ -2403,6 +2403,8 @@ static int cam_ife_hw_mgr_acquire_res_ife_out_rdi(
 			vfe_acquire.event_cb = cam_ife_hw_mgr_event_handler;
 		}
 		vfe_acquire.buf_done_controller = c_ctx->buf_done_controller;
+		vfe_acquire.mc_comp_buf_done_controller =
+			c_ctx->mc_comp_buf_done_controller;
 		hw_intf = ife_src_res->hw_res[0]->hw_intf;
 		vfe_acquire.vfe_out.use_wm_pack = ife_src_res->use_wm_pack;
 		vfe_acquire.per_port_acquire = per_port_acquire;
@@ -2564,6 +2566,8 @@ static int cam_ife_hw_mgr_acquire_res_ife_out_pixel(
 
 		}
 		vfe_acquire.buf_done_controller = c_ctx->buf_done_controller;
+		vfe_acquire.mc_comp_buf_done_controller =
+			c_ctx->mc_comp_buf_done_controller;
 		vfe_acquire.per_port_acquire = per_port_acquire;
 		vfe_acquire.vfe_out.vfe_res_out_id = res_type;
 
@@ -4477,6 +4481,8 @@ int cam_ife_hw_mgr_acquire_res_ife_csid_pxl(
 				c_ctx->left_hw_idx = hw_intf->hw_idx;
 				c_ctx->buf_done_controller =
 				csid_acquire.buf_done_controller;
+				c_ctx->mc_comp_buf_done_controller =
+				csid_acquire.mc_comp_buf_done_controller;
 			} else
 				c_ctx->right_hw_idx = hw_intf->hw_idx;
 		} else
@@ -4738,6 +4744,9 @@ static int cam_ife_hw_mgr_acquire_csid_rdi_util(
 	if (!c_ctx->buf_done_controller && csid_acquire.buf_done_controller
 		&& !per_port_acquire)
 		c_ctx->buf_done_controller = csid_acquire.buf_done_controller;
+
+	if (!c_ctx->mc_comp_buf_done_controller && !per_port_acquire)
+		c_ctx->mc_comp_buf_done_controller = csid_acquire.mc_comp_buf_done_controller;
 
 	cam_ife_hw_mgr_put_res(csid_res_list_head, &csid_res);
 
@@ -5669,8 +5678,11 @@ static int cam_ife_hw_mgr_acquire_offline_res_csid(
 
 	csid_res->hw_res[CAM_ISP_HW_SPLIT_LEFT] = csid_acquire.node_res;
 
-	if (!c_ctx->buf_done_controller && csid_acquire.buf_done_controller)
+	if (!c_ctx->buf_done_controller && csid_acquire.buf_done_controller) {
 		c_ctx->buf_done_controller = csid_acquire.buf_done_controller;
+		c_ctx->mc_comp_buf_done_controller =
+			csid_acquire.mc_comp_buf_done_controller;
+	}
 
 	c_ctx->flags.need_csid_top_cfg = csid_acquire.need_top_cfg;
 	csid_res->res_type = CAM_ISP_RESOURCE_PIX_PATH;
@@ -6695,6 +6707,7 @@ static int cam_ife_mgr_acquire_hw(void *hw_mgr_priv, void *acquire_hw_args)
 	c_ctx->left_hw_idx = CAM_IFE_CSID_HW_NUM_MAX;
 	c_ctx->right_hw_idx = CAM_IFE_CSID_HW_NUM_MAX;
 	c_ctx->buf_done_controller = NULL;
+	c_ctx->mc_comp_buf_done_controller = NULL;
 	c_ctx->common.event_cb = acquire_args->event_cb;
 	c_ctx->hw_mgr = ife_hw_mgr;
 	c_ctx->cdm_ops =  cam_cdm_publish_ops();
@@ -9653,6 +9666,7 @@ static int cam_ife_mgr_release_hw(void *hw_mgr_priv,
 	}
 	c_ctx->ctx_type = CAM_IFE_CTX_TYPE_NONE;
 	c_ctx->buf_done_controller = NULL;
+	c_ctx->mc_comp_buf_done_controller = NULL;
 	kfree(c_ctx->scratch_buf_info.sfe_scratch_config);
 	kfree(c_ctx->scratch_buf_info.ife_scratch_config);
 	c_ctx->scratch_buf_info.sfe_scratch_config = NULL;

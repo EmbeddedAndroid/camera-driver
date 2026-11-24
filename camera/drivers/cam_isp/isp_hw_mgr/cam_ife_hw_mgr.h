@@ -400,6 +400,7 @@ struct cam_ife_virtual_rdi_mapping {
  * @ts                      captured timestamp when the ctx is acquired
  * @hw_enabled              Array to indicate active HW
  * @buf_done_controller     Buf done controller.
+ * @mc_comp_buf_done_controller Hw context composite buf done controller
  * @scratch_buf_info        Scratch buf [SFE/IFE] info pertaining to this stream
  * @flags                   Flags pertainting to this ctx
  * @bw_config_version       BW Config version
@@ -478,6 +479,7 @@ struct cam_ife_hw_concrete_ctx {
 	uint32_t                             ctx_config;
 	struct timespec64                    ts;
 	void                                *buf_done_controller;
+	void                                *mc_comp_buf_done_controller;
 	struct cam_ife_hw_mgr_ctx_scratch_buf_info scratch_buf_info;
 	struct cam_ife_hw_mgr_ctx_flags      flags;
 	struct cam_ife_hw_mgr_ctx_pf_info    pf_info;
