@@ -5338,9 +5338,9 @@ static int cam_populate_smmu_context_banks(struct device *dev,
 		goto cb_init_fail;
 	}
 	if (cb->io_support && cb->domain) {
-		iommu_set_fault_handler(cb->domain,
-			cam_smmu_iommu_fault_handler,
-			(void *)cb->name[0]);
+		cam_iommu_set_fault_handler_compat(cb->domain,
+						   cam_smmu_iommu_fault_handler,
+						   (void *)cb->name[0]);
 
 		num_fault_props = of_property_count_strings(dev->of_node, "qcom,iommu-faults");
 		if (num_fault_props > 0) {

@@ -297,6 +297,21 @@ static inline void cam_timer_delete_sync_compat(struct timer_list *timer)
 #endif
 }
 
+/*
+ * Since 6.15 a domain holds either a DMA API cookie or a fault handler,
+ * so a DMA API default domain cannot take one.
+ */
+static inline void cam_iommu_set_fault_handler_compat(struct iommu_domain *domain,
+						      iommu_fault_handler_t handler,
+						      void *token)
+{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
+	if (domain->cookie_type != IOMMU_COOKIE_NONE)
+		return;
+#endif
+	iommu_set_fault_handler(domain, handler, token);
+}
+
 int cam_dma_fence_signal_locked(struct dma_fence *fence);
 int cam_reserve_icp_fw(struct cam_fw_alloc_info *icp_fw, size_t fw_length);
 /*
