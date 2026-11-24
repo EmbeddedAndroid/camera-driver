@@ -589,7 +589,11 @@ struct cam_isp_tfe_alignment_offset_config {
 struct cam_isp_tfe_alignment_resource_info {
 	__u32                                        version;
 	__u32                                        num_ports;
-	struct cam_isp_tfe_alignment_offset_config   port_alignment_cfg[1];
+	union {
+		struct cam_isp_tfe_alignment_offset_config port_alignment_cfg[1];
+		__DECLARE_FLEX_ARRAY(struct cam_isp_tfe_alignment_offset_config,
+			port_alignment_cfg_flex);
+	};
 } __attribute__((packed));
 
 /**
@@ -618,7 +622,10 @@ struct cam_isp_tfe_wm_dimension_config {
 struct cam_isp_tfe_out_resource_config {
 	__u32                                       num_ports;
 	__u32                                       reserved;
-	struct cam_isp_tfe_wm_dimension_config      dimension_config[1];
+	union {
+		struct cam_isp_tfe_wm_dimension_config dimension_config[1];
+		__DECLARE_FLEX_ARRAY(struct cam_isp_tfe_wm_dimension_config, dimension_config_flex);
+	};
 };
 
 /**

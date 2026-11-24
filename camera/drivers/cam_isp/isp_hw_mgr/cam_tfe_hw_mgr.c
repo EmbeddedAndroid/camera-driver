@@ -4196,7 +4196,7 @@ static int cam_isp_tfe_blob_buffer_alignment_update(
 
 	ctx = prepare->ctxt_to_hw_map;
 	for (i = 0; i < alignment_info->num_ports; i++) {
-		alignment_port_cfg = &alignment_info->port_alignment_cfg[i];
+		alignment_port_cfg = &alignment_info->port_alignment_cfg_flex[i];
 		res_id_out = alignment_port_cfg->resource_type & 0xFF;
 
 		if (res_id_out >= g_tfe_hw_mgr.isp_caps.max_tfe_out_res_type) {
@@ -4258,7 +4258,7 @@ static int cam_isp_tfe_blob_update_out_resource_config(
 	kmd_buf_info = blob_info->kmd_buf_info;
 
 	for (i = 0; i < update_out_cfg->num_ports; i++) {
-		wm_dim_config = &update_out_cfg->dimension_config[i];
+		wm_dim_config = &update_out_cfg->dimension_config_flex[i];
 
 		if ((kmd_buf_info->used_bytes
 			+ total_used_bytes) < kmd_buf_info->size) {
